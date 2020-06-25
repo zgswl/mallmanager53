@@ -37,7 +37,7 @@
           if (status === 200) {
             // 登录成功
             // 1.跳转home
-            // this.$route.push({ name: 'home' })
+            this.$router.push({ name: 'home' })
             // 2.提示成功
             this.$message.success(msg);
           } else {
