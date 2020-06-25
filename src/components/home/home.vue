@@ -3,19 +3,19 @@
     <el-header class="header">
       <el-row>
         <el-col class="logo" :span="4">
-          <img src="../../assets/logo.png" alt="中广深logo">
+          <img src="../../assets/logo.png" alt="中广深logo" />
         </el-col>
         <el-col :span="18" class="middle">
           <h4>中广深电商后台管理系统</h4>
         </el-col>
         <el-col :span="2">
-          <a class="logout" href="#">退出</a>
+          <a class="logout" @click.prevent="handleSigout()" href="#">退出</a>
         </el-col>
       </el-row>
     </el-header>
     <el-container>
       <el-aside class="Aside" width="200px">
-        <el-menu :unique-opened=true>
+        <el-menu :unique-opened="true">
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -92,55 +92,60 @@
 
 <script>
 export default {
-
   beforeCreate () {
     const token = localStorage.getItem('token')
     if (!token) {
       this.$router.push({ name: 'login' })
     }
+  },
+  methods: {
+    handleSigout () {
+      localStorage.clear()
+      this.$message.success('退出成功')
+      this.$router.push({ name: 'login' })
+    }
   }
-
 }
 </script>
 
 <style scoped>
-  .container {
-    height: 100%;
-  }
+.container {
+  height: 100%;
+}
 
-  .header {
-    background-color: #b3c0d1;
-  }
+.header {
+  background-color: #b3c0d1;
+}
 
-  .Aside {
-    background-color: #d3dcd6;
-  }
+.Aside {
+  background-color: #d3dcd6;
+}
 
-  .main {
-    background-color: #e9eef3;
-  }
+.main {
+  background-color: #e9eef3;
+}
 
-  /* 头部样式 */
-  .logo {
-    padding: 0;
-    margin: 0;
-    line-height: 60px;
-  }
+/* 头部样式 */
+.logo {
+  padding: 0;
+  margin: 0;
+  line-height: 60px;
+}
 
-  .logo img {
-    width: 100px;
-    height: 25px;
-    text-align: center;
-  }
+.logo img {
+  width: 100px;
+  height: 25px;
+  text-align: center;
+}
 
-  .middle {
-    /* line-height: 60px; */
-    color: blue;
-    text-align: center;
-  }
+.middle {
+  /* line-height: 60px; */
+  color: blue;
+  text-align: center;
+}
 
-  .logout {
-    line-height: 60px;
-    text-decoration: none;
-  }
+.logout {
+  line-height: 60px;
+  text-decoration: none;
+}
 </style>
