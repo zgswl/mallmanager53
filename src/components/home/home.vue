@@ -15,13 +15,13 @@
     </el-header>
     <el-container>
       <el-aside class="Aside" width="200px">
-        <el-menu :unique-opened="true">
+        <el-menu :unique-opened="true" :router="true">
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="1-1">
+            <el-menu-item index="users">
               <i class="el-icon-circle-check"></i>
               <span>用户列表</span>
             </el-menu-item>
@@ -85,7 +85,9 @@
           <!-- 5 -->
         </el-menu>
       </el-aside>
-      <el-main class="main">Main</el-main>
+      <el-main class="main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -109,43 +111,43 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  height: 100%;
-}
+  .container {
+    height: 100%;
+  }
 
-.header {
-  background-color: #b3c0d1;
-}
+  .header {
+    background-color: #b3c0d1;
+  }
 
-.Aside {
-  background-color: #d3dcd6;
-}
+  .Aside {
+    background-color: #d3dcd6;
+  }
 
-.main {
-  background-color: #e9eef3;
-}
+  .main {
+    background-color: #e9eef3;
+  }
 
-/* 头部样式 */
-.logo {
-  padding: 0;
-  margin: 0;
-  line-height: 60px;
-}
+  /* 头部样式 */
+  .logo {
+    padding: 0;
+    margin: 0;
+    line-height: 60px;
+  }
 
-.logo img {
-  width: 100px;
-  height: 25px;
-  text-align: center;
-}
+  .logo img {
+    width: 100px;
+    height: 25px;
+    text-align: center;
+  }
 
-.middle {
-  /* line-height: 60px; */
-  color: blue;
-  text-align: center;
-}
+  .middle {
+    /* line-height: 60px; */
+    color: blue;
+    text-align: center;
+  }
 
-.logout {
-  line-height: 60px;
-  text-decoration: none;
-}
+  .logout {
+    line-height: 60px;
+    text-decoration: none;
+  }
 </style>
