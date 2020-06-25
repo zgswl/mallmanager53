@@ -30,11 +30,11 @@ export default {
       // 希望异步操作的代码,看起来像同步代码
       // ES7 async+await
       const res = await this.$http.post('login', this.formdata)
-
       const {data, meta: { msg, status }} = res.data
       console.log(data)
       if (status === 200) {
-        localStorage.setItem('token', data,token)
+        localStorage.setItem('token', data.token)
+        console.log(localStorage.token)
         this.$router.push({ name: 'home' })
         this.$message.success(msg)
       } else {
