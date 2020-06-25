@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
 import MyServerHttp from '@/pluginx/http.js'
+import moment from 'moment'
 
 import axios from 'axios'
 
@@ -19,6 +20,10 @@ Vue.use(ElementUI)
 Vue.use(MyServerHttp)
 
 Vue.config.productionTip = false
+
+Vue.filter('fmtdate', (v) => {
+  return moment(v).format('YYYY-MM-DD')
+})
 
 /* eslint-disable no-new */
 new Vue({

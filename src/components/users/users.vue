@@ -20,13 +20,31 @@
 
     <!-- 表格 -->
     <el-table :data="userlist" style="width: 100%">
-      <el-table-column type="index" label="#" width="60"> </el-table-column>
+      <el-table-column type="index" label="#" width="80"> </el-table-column>
       <el-table-column prop="username" label="姓名" width="80"> </el-table-column>
       <el-table-column prop="email" label="邮箱"> </el-table-column>
       <el-table-column prop="mobile" label="电话"> </el-table-column>
-      <el-table-column prop="create_time" label="创建时间"> </el-table-column>
-      <el-table-column prop="mg_state" label="用户状态"> </el-table-column>
-      <el-table-column prop="address" label="操作"> </el-table-column>
+      <el-table-column prop="create_time" label="创建时间">
+
+        {{create_time | fmtdate}}
+        <!-- <template slot-scope = "userlist">
+          {{userlist.row.create_time | fmtdate}}
+        </template> -->
+
+      </el-table-column>
+      <el-table-column label="用户状态" width="100">
+
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          </el-switch>
+        </template>
+
+      </el-table-column>
+      <el-table-column prop="address" label="操作" width="150">
+        <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+        <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+        <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
   </el-card>
@@ -45,6 +63,7 @@
         // id: 500
         // role_name: "超级管理员"
         userlist: [],
+        mg_state: true,
         total: -1,
         pagenum: 1,
         pagesize: 2,
