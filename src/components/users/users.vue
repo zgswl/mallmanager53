@@ -179,7 +179,7 @@ export default {
       currUserId: -1,
       currUsername: '',
       //
-      roles:[]
+      roles: []
     }
   },
   created () {
@@ -187,19 +187,19 @@ export default {
   },
   methods: {
     // 分配角色 - 发送请求
-    async setRol(){
+    async setRol () {
       // users/:id/role
       // :id 要修改的用户的id值
       // 请求体中 rid 修改的新值角色id
-      const res = await this.$http.put(`users/${this.currUserId}/role`,{
-        rid:this.currRoleId
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.currRoleId
       })
       // console.log(res)
       // 关闭对话框
       this.dialogFormVisibleRol = false
     },
     // 分配角色 - 打开对话框
-    async showSetUserRoleDia(user){
+    async showSetUserRoleDia (user) {
       this.currUsername = user.username
       this.dialogFormVisibleRol = true
 
@@ -300,8 +300,13 @@ export default {
       // query查询参数可以为空
       // pagenum当前页码不能为空
       // pagesize每页显示条数不能为空
-      const AUTH_TOKEN = localStorage.getItem('token')
-      this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+
+      // 需要授权的 API 必须在请求头中使用 Authorization 字段提供 token 令牌
+      // const AUTH_TOKEN = localStorage.getItem('token')
+      // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+
+      console.log('发起请求')
+
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       )
@@ -316,7 +321,7 @@ export default {
         // 给total赋值
         this.total = total
         // 提示
-        // this.$message.success(msg)
+        this.$message.success(msg)
       } else {
         // this.$message.warning(msg)
       }
