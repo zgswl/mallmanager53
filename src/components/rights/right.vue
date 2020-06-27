@@ -28,26 +28,26 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       rightlist: []
-    };
+    }
   },
-  created() {
-    this.getRightlist();
+  created () {
+    this.getRightlist()
   },
   methods: {
-    async getRightlist() {
+    async getRightlist () {
       // 除了登录之外的所有请求,都需要设置头部
       // const AUTH_TOKEN = localStorage.getItem('token')
       // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
       // 已经在拦截器中设置头部了
-      const res = await this.$http.get(`rights/list`);
-      console.log(res);
-      this.rightlist = res.data.data;
+      const res = await this.$http.get(`rights/list`)
+      console.log(res)
+      this.rightlist = res.data.data
     }
   }
-};
+}
 </script>
 
 <style scoped></style>

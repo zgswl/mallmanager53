@@ -110,7 +110,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="editUser()"">确 定</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
 
