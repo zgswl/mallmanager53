@@ -43,9 +43,9 @@
 
 <script>
 export default {
-  data(){
-    return{
-      menus:[]
+  data () {
+    return {
+      menus: []
     }
   },
   // newVue之前自动触发
@@ -55,17 +55,17 @@ export default {
     // const token = localStorage.getItem('token')
 
     // if (!token) {
-      // token没有 -> 登录
-      // this.$router.push({ name: 'login' })
+    // token没有 -> 登录
+    // this.$router.push({ name: 'login' })
     // }
     // if token e -> 继续渲染组件
   },
-  created() {
+  created () {
     this.getMenus()
   },
   methods: {
     // 获取导航数据
-    async getMenus() {
+    async getMenus () {
       const res = await this.$http.get(`menus`)
       console.log(res)
       this.menus = res.data.data

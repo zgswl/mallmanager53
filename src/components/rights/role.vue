@@ -155,16 +155,16 @@ export default {
       rolelist: [],
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
-      dialogFormVisibleRight:false,
+      dialogFormVisibleRight: false,
       // 树形结构的数据
-      treelist:[],
-      defaultProps:{
-        label:'authName',
-        children:'children'
+      treelist: [],
+      defaultProps: {
+        label: 'authName',
+        children: 'children'
       },
-      arrexpand:[],
-      arrcheck:[],
-      currRoleId:[]
+      arrexpand: [],
+      arrcheck: [],
+      currRoleId: []
     }
   },
   created () {
@@ -172,7 +172,7 @@ export default {
   },
   methods: {
     // 修改权限 - 发请求
-    async setRoleRight(){
+    async setRoleRight () {
       //     1.5.6.角色授权
       // 请求路径：roles/: roleId/ rights
       //       请求方法：post
@@ -190,11 +190,11 @@ export default {
       // console.log(arr2)
       // let arr = arr1.concat(arr2)
       // arr = arr1 + arr2
-      let arr = [...arr1,...arr2]
+      let arr = [...arr1, ...arr2]
       // console.log(arr)
 
       const res = await this.$http.post(`roles/${this.currRoleId}/rights`,
-      {rids: arr.join(',')})
+        {rids: arr.join(',')})
       // console.log(res)
       // 关闭对话框
       this.dialogFormVisibleRight = false
@@ -202,11 +202,10 @@ export default {
       this.getRolelist()
     },
     // 修改/分配 权限 - 打开对话框
-    async showSetRightDia(role){
+    async showSetRightDia (role) {
       // console.log(role)
       // 给currRoldId赋值
       this.currRoleId = role.id
-
 
       // 获取树形结构的权限数据
       const res = await this.$http.get(`rights/tree`)
