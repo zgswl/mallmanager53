@@ -110,7 +110,24 @@
 
 <!-- 修改权限的对话框 -->
 <el-dialog title="修改权限" :visible.sync="dialogFormVisibleRight">
-<!-- 树形结构 -->
+  <!-- 树形结构
+    data -> 数据源 []
+    show-checkbos -> 选择框
+    node-key 每个节点的唯一标识 通常是data数据源中key 名id
+    default-expanded-keys
+    default-checked-keys
+    props 配置项 {label,children}
+    label 节点的文字标题和children节点的子节点,
+    值都来源于data绑定的数据源中的该数据的key名 'label' 和 'children'
+   -->
+  <el-tree
+  :data="data"
+  show-checkbox
+  node-key="id"
+  :default-expanded-keys="[2, 3]"
+  :default-checked-keys="[5]"
+  :props="defaultProps">
+  </el-tree>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
     <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
