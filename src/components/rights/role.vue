@@ -86,7 +86,7 @@
         },
         rolelist: [],
         dialogFormVisibleAdd: false,
-        dialogFormVisibleEdit:false
+        dialogFormVisibleEdit: false
       }
     },
     created() {
@@ -99,8 +99,9 @@
         // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
         // 已经在拦截器中设置头部了
         const res = await this.$http.get(`roles`)
-        console.log(res)
+        // console.log(res)
         this.rolelist = res.data.data
+
       },
       showAddRoleDia() {
         this.form = {}
@@ -111,9 +112,32 @@
         // alert(role)
         this.form = role
         this.dialogFormVisibleEdit = true
+
       },
-      showDeleRoleMsgBox(role){
-        // alert(role)
+      showDeleRoleMsgBox(roleId) {
+        this.$confirm('删除角色', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          // 发送删除请求
+          // id
+          const res = await this.$http.delete(`roles/${roleId}`)
+          // console.log(res)
+          if (res.data.meta.status === 200) {
+            this.getRolelist()
+            // alert('删除角色')
+            this.$message({
+              type: 'success',
+              message: res.data.meta.msg
+            })
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       },
       showSetUserRoleDia(role) {
         // alert(role)
@@ -127,21 +151,22 @@
         // 1关闭对话框
         this.dialogFormVisibleEdit = false
         // 更新视图
-        this.getUserList()
+        this.getRolelist()
       },
       async addRole() {
         // alert('添加角色')
         this.dialogFormVisibleAdd = false
         const res = await this.$http.post(`roles`, this.form)
-        console.log(res)
+        // console.log(res)
         const { meta: { status, msg }, data } = res.data
         if (status === 201) {
+          this.getRolelist()
           this.$message.success(msg)
-          this.getRoleList()
           this.form = {}
         } else {
           this.$message.warning(msg)
         }
+
       }
     }
   }
