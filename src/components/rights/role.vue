@@ -45,25 +45,23 @@
       </div>
     </el-dialog>
 
-
     <!-- 表格 -->
     <el-table :data="rolelist" style="width: 100%">
-
       <el-table-column type="expand" width="50">
         <template slot-scope="scope">
-          <el-row v-for="(item1,i) in scope.row.children" ::key="i">
+          <el-row v-for="(item1,i) in scope.row.children" :key="i">
             <el-col :span="4">
               <el-tag>{{item1.authName}}</el-tag>
             </el-col>
             <el-col :span="20">
-              <el-col>
+              <el-row v-for="(item2,i) in item1.children" :key="i">
                 <el-col :span="4">
-
+                  <el-tag>{{item2.authName}}</el-tag>
                 </el-col>
                 <el-col :span="20"></el-col>
-              </el-col>
+              </el-row>
             </el-col>
-          </el-row>>
+          </el-row>
         </template>
       </el-table-column>
 
@@ -97,99 +95,96 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        form: {
-          roleName: '',
-          roleDesc: ''
-        },
-        rolelist: [],
-        dialogFormVisibleAdd: false,
-        dialogFormVisibleEdit: false
-      }
+export default {
+  data () {
+    return {
+      form: {
+        roleName: '',
+        roleDesc: ''
+      },
+      rolelist: [],
+      dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false
+    }
+  },
+  created () {
+    this.getRolelist()
+  },
+  methods: {
+    async getRolelist () {
+      // 除了登录之外的所有请求,都需要设置头部
+      // const AUTH_TOKEN = localStorage.getItem('token')
+      // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+      // 已经在拦截器中设置头部了
+      const res = await this.$http.get(`roles`)
+      console.log(res)
+      this.rolelist = res.data.data
     },
-    created() {
+    showAddRoleDia () {
+      this.form = {}
+      this.dialogFormVisibleAdd = true
+    },
+    showEditRoleDia (role) {
+      // console.log(role)
+      // alert(role)
+      this.form = role
+      this.dialogFormVisibleEdit = true
+    },
+    showDeleRoleMsgBox (roleId) {
+      this.$confirm('删除角色', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 发送删除请求
+        // id
+        const res = await this.$http.delete(`roles/${roleId}`)
+        // console.log(res)
+        if (res.data.meta.status === 200) {
+          this.getRolelist()
+          // alert('删除角色')
+          this.$message({
+            type: 'success',
+            message: res.data.meta.msg
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    showSetUserRoleDia (role) {
+      // alert(role)
+    },
+    // 编辑角色中的发送请求
+    async editRole () {
+      // alert('编辑角色')
+      // users/:id
+      const res = await this.$http.put(`roles/${this.form.id}`, this.form)
+      // console.log(res)
+      // 1关闭对话框
+      this.dialogFormVisibleEdit = false
+      // 更新视图
       this.getRolelist()
     },
-    methods: {
-      async getRolelist() {
-        // 除了登录之外的所有请求,都需要设置头部
-        // const AUTH_TOKEN = localStorage.getItem('token')
-        // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
-        // 已经在拦截器中设置头部了
-        const res = await this.$http.get(`roles`)
-        console.log(res)
-        this.rolelist = res.data.data
-
-      },
-      showAddRoleDia() {
-        this.form = {}
-        this.dialogFormVisibleAdd = true
-      },
-      showEditRoleDia(role) {
-        // console.log(role)
-        // alert(role)
-        this.form = role
-        this.dialogFormVisibleEdit = true
-
-      },
-      showDeleRoleMsgBox(roleId) {
-        this.$confirm('删除角色', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          // 发送删除请求
-          // id
-          const res = await this.$http.delete(`roles/${roleId}`)
-          // console.log(res)
-          if (res.data.meta.status === 200) {
-            this.getRolelist()
-            // alert('删除角色')
-            this.$message({
-              type: 'success',
-              message: res.data.meta.msg
-            })
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-      },
-      showSetUserRoleDia(role) {
-        // alert(role)
-      },
-      // 编辑角色中的发送请求
-      async editRole() {
-        // alert('编辑角色')
-        // users/:id
-        const res = await this.$http.put(`roles/${this.form.id}`, this.form)
-        // console.log(res)
-        // 1关闭对话框
-        this.dialogFormVisibleEdit = false
-        // 更新视图
+    async addRole () {
+      // alert('添加角色')
+      this.dialogFormVisibleAdd = false
+      const res = await this.$http.post(`roles`, this.form)
+      // console.log(res)
+      const { meta: { status, msg }, data } = res.data
+      if (status === 201) {
         this.getRolelist()
-      },
-      async addRole() {
-        // alert('添加角色')
-        this.dialogFormVisibleAdd = false
-        const res = await this.$http.post(`roles`, this.form)
-        // console.log(res)
-        const { meta: { status, msg }, data } = res.data
-        if (status === 201) {
-          this.getRolelist()
-          this.$message.success(msg)
-          this.form = {}
-        } else {
-          this.$message.warning(msg)
-        }
-
+        this.$message.success(msg)
+        this.form = {}
+      } else {
+        this.$message.warning(msg)
       }
     }
   }
+}
 </script>
 
 <style scoped>
@@ -202,7 +197,6 @@
   }
 </style>
 
-
-//  行列布局 -> for嵌套
+// 行列布局 -> for嵌套
 
 //
