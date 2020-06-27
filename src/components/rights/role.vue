@@ -51,7 +51,19 @@
 
       <el-table-column type="expand" width="50">
         <template slot-scope="scope">
-          test expand
+          <el-row v-for="(item1,i) in scope.row.children" ::key="i">
+            <el-col :span="4">
+              <el-tag>{{item1.authName}}</el-tag>
+            </el-col>
+            <el-col :span="20">
+              <el-col>
+                <el-col :span="4">
+
+                </el-col>
+                <el-col :span="20"></el-col>
+              </el-col>
+            </el-col>
+          </el-row>>
         </template>
       </el-table-column>
 
@@ -107,7 +119,7 @@
         // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
         // 已经在拦截器中设置头部了
         const res = await this.$http.get(`roles`)
-        // console.log(res)
+        console.log(res)
         this.rolelist = res.data.data
 
       },
@@ -189,3 +201,8 @@
     margin: 10px;
   }
 </style>
+
+
+//  行列布局 -> for嵌套
+
+//
