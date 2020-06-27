@@ -127,7 +127,8 @@
   :data="treelist"
   show-checkbox
   node-key="id"
-
+  :default-expanded-keys="arrexpand"
+  :default-checked-keys="[5]"
   :props="defaultProps">
   </el-tree>
   <div slot="footer" class="dialog-footer">
@@ -156,7 +157,8 @@ export default {
       defaultProps:{
         label:'authName',
         children:'children'
-      }
+      },
+      arrexpand:[]
     }
   },
   created () {
@@ -167,8 +169,21 @@ export default {
     async showSetRightDia(role){
       // 获取树形结构的权限数据
       const res = await this.$http.get(`rights/tree`)
-      console.log(res)
+      // console.log(res)
       this.treelist = res.data.data
+      var arrtemp1 = []
+      this.treelist.forEach(item1 => {
+        arrtemp1.push(item1.id)
+        item1.children.forEach(item2 => {
+          arrtemp1.push(item2.id)
+            item2.children.forEach(item3 => {
+            arrtemp1.push(item3.id)
+          })
+        })
+      })
+
+      // console.log(arrtemp1 )
+      this.arrexpand = arrtemp1
       this.dialogFormVisibleRight = true
     },
     // 取消权限
