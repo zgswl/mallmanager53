@@ -31,7 +31,7 @@ export default new Router({
           component: Right
         },
         {
-          name: 'role',
+          name: 'roles',
           path: '/roles',
           component: Role
         }
