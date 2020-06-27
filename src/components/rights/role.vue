@@ -97,12 +97,25 @@
           <el-button size="mini" plain type="danger" icon="el-icon-delete" circle
             @click="showDeleRoleMsgBox(scope.row.id)">
           </el-button>
-          <el-button @click="showSetUserRoleDia(scope.row)" size="mini" plain type="success" icon="el-icon-check"
+          <el-button
+          @click="showSetRightDia(scope.row)"
+          size="mini"
+          plain type="success"
+          icon="el-icon-check"
             circle>
           </el-button>
         </template>
       </el-table-column>
     </el-table>
+
+<!-- 修改权限的对话框 -->
+<el-dialog title="修改权限" :visible.sync="dialogFormVisibleRight">
+<!-- 树形结构 -->
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
+    <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+  </div>
+</el-dialog>
 
   </el-card>
 </template>
@@ -117,13 +130,18 @@ export default {
       },
       rolelist: [],
       dialogFormVisibleAdd: false,
-      dialogFormVisibleEdit: false
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleRight:false
     }
   },
   created () {
     this.getRolelist()
   },
   methods: {
+    // 修改/分配 权限 - 打开对话框
+    showSetRightDia(role){
+      this.dialogFormVisibleRight = true
+    },
     // 取消权限
     async deleRight (role, rightId) {
       // 请求路径：roles/:roleId/rights/:rightId 请求方法：delete
@@ -131,9 +149,10 @@ export default {
       // rightId	权限 ID	不能为空携带在url中
       const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
       console.log(res)
+      // 删除成功 ->更新整个表格 -> 没有必要
       // 删除成功 返回了200状态码和该角色的剩余权限
-      // 删除成功 返回当前角色的权限
-      role.children= res.data.data
+      // 删除成功 返回当前角色更新后的剩余权限 children
+      role.children = res.data.data
       // this.getRolelist()
     },
     async getRolelist () {
