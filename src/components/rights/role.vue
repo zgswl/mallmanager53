@@ -69,6 +69,9 @@
               </el-row>
             </el-col>
           </el-row>
+
+          <!-- 无权限的提示 -->
+          <span v-if="scope.row.children.length===0">未分配权限</span>
         </template>
       </el-table-column>
 
