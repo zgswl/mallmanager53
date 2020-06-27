@@ -24,7 +24,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="addRole()">确 定</el-button>
+        <el-button type="primary"
+        @click="addRole()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -126,6 +127,7 @@
     :default-expanded-keys="arrexpand"
   -->
   <el-tree
+  ref = "tree"
   :data="treelist"
   show-checkbox
   node-key="id"
@@ -135,7 +137,7 @@
   </el-tree>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
-    <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+    <el-button type="primary" @click="setRoleRight">确 定</el-button>
   </div>
 </el-dialog>
 
@@ -161,16 +163,49 @@ export default {
         children:'children'
       },
       arrexpand:[],
-      arrcheck:[]
+      arrcheck:[],
+      currRoleId:[]
     }
   },
   created () {
     this.getRolelist()
   },
   methods: {
+    // 修改权限 - 发请求
+    async setRoleRight(){
+      //     1.5.6.角色授权
+      // 请求路径：roles/: roleId/ rights
+      //       请求方法：post
+      //       请求参数
+      //       参数名	参数说明	备注
+      //       : roleId	角色 ID	不能为空携带在url中
+      //       rids	权限 ID 列表	以, 分割的权限 ID 列表
+      // roleId 当前要修改权限的角色id
+      // rids 树形节点中 所有全选和半选的label的id []
+      // 获取全选的id的数组 arr1 getCheckedKeys
+      let arr1 = this.$refs.tree.getCheckedKeys()
+      // console.log(arr1)
+      // 获取半选的id的数组 arr2 getHalfCheckedKeys
+      let arr2 = this.$refs.tree.getHalfCheckedKeys()
+      // console.log(arr2)
+      // let arr = arr1.concat(arr2)
+      // arr = arr1 + arr2
+      let arr = [...arr1,...arr2]
+      // console.log(arr)
+
+      const res = await this.$http.post(`roles/${this.currRoleId}/rights`,
+      {rids: arr.join(',')})
+      // console.log(res)
+      // 关闭对话框
+      this.dialogFormVisibleRight = false
+      // 更新视图
+      this.getRolelist()
+    },
     // 修改/分配 权限 - 打开对话框
     async showSetRightDia(role){
       // console.log(role)
+      // 给currRoldId赋值
+      this.currRoleId = role.id
 
 
       // 获取树形结构的权限数据
