@@ -48,7 +48,15 @@
 
     <!-- 表格 -->
     <el-table :data="rolelist" style="width: 100%">
-      <el-table-column type="index" label="#" width="150"> </el-table-column>
+
+      <el-table-column type="expand" width="50">
+        <template slot-scope="scope">
+          test expand
+        </template>
+      </el-table-column>
+
+      <el-table-column type="index" label="#" width="80"> </el-table-column>
+
       <!--
         roleName: "主管"
         roleDesc: "技术负责人"
