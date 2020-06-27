@@ -30,7 +30,7 @@
 
     <!-- 对话框 -->
     <!-- 编辑角色的对话框 -->
-    <!-- <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleAdd">
+    <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
       <el-form :model="form">
         <el-form-item label="角色名称" label-width="100px">
           <el-input v-model="form.roleName" autocomplete="off"></el-input>
@@ -40,10 +40,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
         <el-button type="primary" @click="editRole()">确 定</el-button>
       </div>
-    </el-dialog> -->
+    </el-dialog>
 
 
     <!-- 表格 -->
@@ -85,7 +85,8 @@
           roleDesc: ''
         },
         rolelist: [],
-        dialogFormVisibleAdd: false
+        dialogFormVisibleAdd: false,
+        dialogFormVisibleEdit:false
       }
     },
     created() {
@@ -106,7 +107,7 @@
         this.dialogFormVisibleAdd = true
       },
       showEditRoleDia(role) {
-        console.log(role)
+        // console.log(role)
         // alert(role)
         this.form = role
         this.dialogFormVisibleEdit = true
@@ -117,17 +118,17 @@
       showSetUserRoleDia(role) {
         // alert(role)
       },
-      // 编辑用户中的发送请求
-      // async editRole() {
-      //   alert('编辑角色')
-      //   // users/:id
-      //   // const res = await this.$http.put(`users/${this.form.id}`, this.form)
-      //   // console.log(res)
-      //   // 1关闭对话框
-      //   // this.dialogFormVisibleEdit = false
-      //   // 更新视图
-      //   // this.getUserList()
-      // },
+      // 编辑角色中的发送请求
+      async editRole() {
+        // alert('编辑角色')
+        // users/:id
+        const res = await this.$http.put(`roles/${this.form.id}`, this.form)
+        // console.log(res)
+        // 1关闭对话框
+        this.dialogFormVisibleEdit = false
+        // 更新视图
+        this.getUserList()
+      },
       async addRole() {
         // alert('添加角色')
         this.dialogFormVisibleAdd = false
