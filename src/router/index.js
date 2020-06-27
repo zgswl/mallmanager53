@@ -32,7 +32,7 @@ export default new Router({
         },
         {
           name: 'role',
-          path: '/role',
+          path: '/roles',
           component: Role
         }
       ]

@@ -32,7 +32,7 @@
               <i class="el-icon-location"></i>
               <span>权限管理</span>
             </template>
-            <el-menu-item index="role"">
+            <el-menu-item index="roles">
               <i class="el-icon-location"></i>
               <span>角色列表</span>
             </el-menu-item>
