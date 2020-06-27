@@ -31,7 +31,7 @@
               <span>{{item2.authName}}</span>
             </el-menu-item>
           </el-submenu>
-          //演示不同用户登录,显示不同权限
+          <!-- 演示不同用户登录,显示不同权限 -->
         </el-menu>
       </el-aside>
       <el-main class="main">
@@ -48,11 +48,17 @@ export default {
       menus:[]
     }
   },
+  // newVue之前自动触发
+
   beforeCreate () {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      this.$router.push({ name: 'login' })
-    }
+    // 获取token
+    // const token = localStorage.getItem('token')
+
+    // if (!token) {
+      // token没有 -> 登录
+      // this.$router.push({ name: 'login' })
+    // }
+    // if token e -> 继续渲染组件
   },
   created() {
     this.getMenus()

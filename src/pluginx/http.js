@@ -10,12 +10,12 @@ MyHttpServer.install = Vue => {
   // 添加请求拦截器
   axios.interceptors.request.use(
     function (config) {
-      console.log('拦截器被触发')
+      // console.log('拦截器被触发')
 
       console.log(config)
       if (config.url !== 'login') {
         // alert(config.url)
-        console.log('拦截器设置头部')
+        // console.log('拦截器设置头部')
         const AUTH_TOKEN = localStorage.getItem('token')
         config.headers['Authorization'] = AUTH_TOKEN
       }
