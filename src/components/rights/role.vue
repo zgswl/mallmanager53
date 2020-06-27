@@ -120,12 +120,14 @@
     label 节点的文字标题和children节点的子节点,
     值都来源于data绑定的数据源中的该数据的key名 'label' 和 'children'
    -->
+
+    <!-- :default-expanded-keys="[2, 3]"
+    :default-checked-keys="[5]" -->
   <el-tree
-  :data="data"
+  :data="treelist"
   show-checkbox
   node-key="id"
-  :default-expanded-keys="[2, 3]"
-  :default-checked-keys="[5]"
+
   :props="defaultProps">
   </el-tree>
   <div slot="footer" class="dialog-footer">
@@ -148,7 +150,13 @@ export default {
       rolelist: [],
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
-      dialogFormVisibleRight:false
+      dialogFormVisibleRight:false,
+      // 树形结构的数据
+      treelist:[],
+      defaultProps:{
+        label:'authName',
+        children:'children'
+      }
     }
   },
   created () {
@@ -156,7 +164,11 @@ export default {
   },
   methods: {
     // 修改/分配 权限 - 打开对话框
-    showSetRightDia(role){
+    async showSetRightDia(role){
+      // 获取树形结构的权限数据
+      const res = await this.$http.get(`rights/tree`)
+      console.log(res)
+      this.treelist = res.data.data
       this.dialogFormVisibleRight = true
     },
     // 取消权限
@@ -165,7 +177,7 @@ export default {
       // roleId	角色 ID	不能为空携带在url中
       // rightId	权限 ID	不能为空携带在url中
       const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
-      console.log(res)
+      // console.log(res)
       // 删除成功 ->更新整个表格 -> 没有必要
       // 删除成功 返回了200状态码和该角色的剩余权限
       // 删除成功 返回当前角色更新后的剩余权限 children
