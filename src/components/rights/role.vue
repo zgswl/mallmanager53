@@ -122,12 +122,14 @@
    -->
 
     <!-- :default-expanded-keys="[2, 3]"
-    :default-checked-keys="[5]" -->
+    :default-checked-keys="[5]"
+    :default-expanded-keys="arrexpand"
+  -->
   <el-tree
   :data="treelist"
   show-checkbox
   node-key="id"
-  :default-expanded-keys="arrexpand"
+  default-expand-all
   :default-checked-keys="[5]"
   :props="defaultProps">
   </el-tree>
@@ -171,19 +173,21 @@ export default {
       const res = await this.$http.get(`rights/tree`)
       // console.log(res)
       this.treelist = res.data.data
-      var arrtemp1 = []
-      this.treelist.forEach(item1 => {
-        arrtemp1.push(item1.id)
-        item1.children.forEach(item2 => {
-          arrtemp1.push(item2.id)
-            item2.children.forEach(item3 => {
-            arrtemp1.push(item3.id)
-          })
-        })
-      })
 
+      // 三层嵌套赋值 展开树形结构用
+      // var arrtemp1 = []
+      // this.treelist.forEach(item1 => {
+      //   arrtemp1.push(item1.id)
+      //   item1.children.forEach(item2 => {
+      //     arrtemp1.push(item2.id)
+      //       item2.children.forEach(item3 => {
+      //       arrtemp1.push(item3.id)
+      //     })
+      //   })
+      // })
       // console.log(arrtemp1 )
-      this.arrexpand = arrtemp1
+      // this.arrexpand = arrtemp1
+
       this.dialogFormVisibleRight = true
     },
     // 取消权限
