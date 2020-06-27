@@ -31,7 +31,7 @@
               <span>{{item2.authName}}</span>
             </el-menu-item>
           </el-submenu>
-
+          //演示不同用户登录,显示不同权限
         </el-menu>
       </el-aside>
       <el-main class="main">
