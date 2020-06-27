@@ -52,20 +52,20 @@
           <el-row v-for="(item1,i) in scope.row.children" :key="i">
             <el-col :span="4">
               <!-- 传角色id 和 权限id  -->
-              <el-tag @close="deleRight(scope.row.id,item1.id)" closable type="">{{item1.authName}}</el-tag>
+              <el-tag @close="deleRight(scope.row,item1.id)" closable type="">{{item1.authName}}</el-tag>
               <i class="el-icon-arrow-right"></i>
             </el-col>
             <el-col :span="20">
               <el-row v-for="(item2,i) in item1.children" :key="i">
 
                 <el-col :span="4">
-                  <el-tag @close="deleRight(scope.row.id,item2.id)" closable type="success">{{item2.authName}}
+                  <el-tag @close="deleRight(scope.row,item2.id)" closable type="success">{{item2.authName}}
                   </el-tag>
                   <i class="el-icon-arrow-right"></i>
                 </el-col>
 
                 <el-col :span="20">
-                  <el-tag @close="deleRight(scope.row.id,item3.id)" closable type="warning"
+                  <el-tag @close="deleRight(scope.row,item3.id)" closable type="warning"
                     v-for="(item3,i) in item2.children" :key="i">
                     {{item3.authName}}</el-tag>
                 </el-col>
@@ -125,14 +125,16 @@ export default {
   },
   methods: {
     // 取消权限
-    async deleRight (roleId, rightId) {
+    async deleRight (role, rightId) {
       // 请求路径：roles/:roleId/rights/:rightId 请求方法：delete
       // roleId	角色 ID	不能为空携带在url中
       // rightId	权限 ID	不能为空携带在url中
-      const res = await this.$http.delete(`roles/${roleId}/rights/${rightId}`)
+      const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
       console.log(res)
       // 删除成功 返回了200状态码和该角色的剩余权限
-      this.getRolelist()
+      // 删除成功 返回当前角色的权限
+      role.children= res.data.data
+      // this.getRolelist()
     },
     async getRolelist () {
       // 除了登录之外的所有请求,都需要设置头部
