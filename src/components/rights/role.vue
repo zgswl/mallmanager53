@@ -130,7 +130,7 @@
   show-checkbox
   node-key="id"
   default-expand-all
-  :default-checked-keys="[5]"
+  :default-checked-keys="arrcheck"
   :props="defaultProps">
   </el-tree>
   <div slot="footer" class="dialog-footer">
@@ -160,7 +160,8 @@ export default {
         label:'authName',
         children:'children'
       },
-      arrexpand:[]
+      arrexpand:[],
+      arrcheck:[]
     }
   },
   created () {
@@ -169,6 +170,9 @@ export default {
   methods: {
     // 修改/分配 权限 - 打开对话框
     async showSetRightDia(role){
+      // console.log(role)
+
+
       // 获取树形结构的权限数据
       const res = await this.$http.get(`rights/tree`)
       // console.log(res)
@@ -187,6 +191,20 @@ export default {
       // })
       // console.log(arrtemp1 )
       // this.arrexpand = arrtemp1
+
+      // 获取当前角色role 的权限id
+      let arrtemp2 = []
+      role.children.forEach(item1 => {
+        arrtemp2.push(item1.id)
+        item1.children.forEach(item2 => {
+          arrtemp2.push(item2.id)
+          item2.children.forEach(item3 => {
+            arrtemp2.push(item3.id)
+          })
+        })
+      })
+      // console.log(arrtemp2 )
+      this.arrcheck = arrtemp2
 
       this.dialogFormVisibleRight = true
     },
