@@ -7,14 +7,7 @@
     <el-alert class="alert" title="添加商品信息" type="success" center show-icon></el-alert>
 
     <!-- 步骤条 -->
-    <!--
-    基本信息
-    商品参数
-    商品属性
-    商品图片
-    商品内容
-   -->
-
+    {{active}}
     <el-steps :active="1*active" finish-status="success" simple style="margin-top: 20px;">
       <el-step title="基本信息"></el-step>
       <el-step title="商品参数"></el-step>
@@ -24,12 +17,8 @@
     </el-steps>
 
     <!-- 最外层 -->
-    <el-form
-    label-position="top"
-    label-width="80px"
-    :model="form"
-    style="height: 400px; overflow: auto;"
-    >
+    <el-form label-position="top" label-width="80px" :model="form"
+    style="height: 400px; overflow: auto;">
       <el-tabs v-model="active" tab-position="left">
         <el-tab-pane name="1" label="基本信息">
           <el-form-item label="商品名称">
@@ -43,6 +32,17 @@
           </el-form-item>
           <el-form-item label="商品数量">
             <el-input v-model="form.goods_number"></el-input>
+          </el-form-item>
+
+          <el-form-item label="商品分类">
+            <!-- 级联选择器 -->
+              <el-cascader
+                expand-Trigger='hover'
+                :options="options"
+                v-model="SelecteOptions"
+                :props="defaultProp"
+                @change="handleChange">
+              </el-cascader>
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="2" label="商品参数">商品参数1</el-tab-pane>
@@ -90,11 +90,23 @@
           goods_introduce: '',
           pics: '',
           attrs: ''
-
+        },
+        // 级联选择器绑定的数据
+        options:[],
+        SelecteOptions:[],
+        defaultProp:{
+          label:'',
+          value:'',
+          children:''
         }
       }
-    }
+    },
+    methods: {
+      //级联选择器 @change 触发的方法
+      handleChange() {
 
+      }
+    }
   }
 </script>
 
