@@ -36,6 +36,7 @@
 
           <el-form-item label="商品分类">
             <!-- 级联选择器 -->
+            {{SelecteOptions}}
               <el-cascader
                 expand-Trigger='hover'
                 :options="options"
@@ -67,47 +68,56 @@
       </el-form-item>
 -->
 <script>
-  export default {
-    data() {
-      return {
-        active: '1',
-        // 添加商品的表单数据
-        // this.$http.post(url,this.form)
-        // goods_name	商品名称	不能为空
-        // goods_price	价格	不能为空
-        // goods_weight	重量	不能为空
-        // goods_number	数量	不能为空
-        // goods_cat	以为','分割的分类列表	不能为空
-        // goods_introduce	介绍	可以为空
-        // pics	上传的图片临时路径（对象）	可以为空
-        // attrs	商品的参数（数组）	可以为空
-        form: {
-          goods_name: '',
-          goods_cat: '',
-          goods_price: '',
-          goods_number: '',
-          goods_weight: '',
-          goods_introduce: '',
-          pics: '',
-          attrs: ''
-        },
-        // 级联选择器绑定的数据
-        options:[],
-        SelecteOptions:[],
-        defaultProp:{
-          label:'',
-          value:'',
-          children:''
-        }
-      }
-    },
-    methods: {
-      //级联选择器 @change 触发的方法
-      handleChange() {
-
+export default {
+  data () {
+    return {
+      active: '1',
+      // 添加商品的表单数据
+      // this.$http.post(url,this.form)
+      // goods_name	商品名称	不能为空
+      // goods_price	价格	不能为空
+      // goods_weight	重量	不能为空
+      // goods_number	数量	不能为空
+      // goods_cat	以为','分割的分类列表	不能为空
+      // goods_introduce	介绍	可以为空
+      // pics	上传的图片临时路径（对象）	可以为空
+      // attrs	商品的参数（数组）	可以为空
+      form: {
+        goods_name: '',
+        goods_cat: '',
+        goods_price: '',
+        goods_number: '',
+        goods_weight: '',
+        goods_introduce: '',
+        pics: '',
+        attrs: ''
+      },
+      // 级联选择器绑定的数据
+      options: [],
+      SelecteOptions: [1, 3, 6],
+      defaultProp: {
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
       }
     }
+  },
+  created () {
+    this.getGoodsCate()
+  },
+  methods: {
+    // 级联选择器 @change 触发的方法
+    handleChange () {
+
+    },
+    // 获取三级分类的信息
+    async getGoodsCate () {
+      const res = await this.$http.get(`categories?type=3`)
+      console.log(res)
+      this.options = res.data.data
+    }
   }
+}
 </script>
 
 <style scoped>
