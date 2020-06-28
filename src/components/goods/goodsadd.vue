@@ -19,7 +19,9 @@
     <!-- 最外层 -->
     <el-form label-position="top" label-width="80px" :model="form"
     style="height: 400px; overflow: auto;">
-      <el-tabs v-model="active" tab-position="left">
+      <el-tabs
+        @tab-click = "tabChange()"
+        v-model="active" tab-position="left">
         <el-tab-pane name="1" label="基本信息">
           <el-form-item label="商品名称">
             <el-input v-model="form.goods_name"></el-input>
@@ -36,8 +38,9 @@
 
           <el-form-item label="商品分类">
             <!-- 级联选择器 -->
-            {{SelecteOptions}}
+            <!-- {{SelecteOptions}} -->
               <el-cascader
+                clearable
                 expand-Trigger='hover'
                 :options="options"
                 v-model="SelecteOptions"
@@ -99,13 +102,31 @@ export default {
         label: 'cat_name',
         value: 'cat_id',
         children: 'children'
-      }
+      },
+      arrDyparams:''
     }
   },
   created () {
     this.getGoodsCate()
   },
   methods: {
+    // 点击不同的tab时
+    async tabChange(){
+      // 如果点击的是第二个tab 同时 三级分类要有值
+      if (this.active==='2') {
+        if (this.SelecteOptions.length!==3) {
+          // 提示
+          this.$message.warning("请先选择商品的三级分类")
+          return
+        }
+        // 获取数据
+        const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=many`)
+        console.log(res)
+        // attr_name attr_vals
+        this.arrDyparams = res.data.data
+
+      }
+    },
     // 级联选择器 @change 触发的方法
     handleChange () {
 
