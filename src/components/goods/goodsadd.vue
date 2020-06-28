@@ -17,11 +17,8 @@
     </el-steps>
 
     <!-- 最外层 -->
-    <el-form label-position="top" label-width="80px" :model="form"
-    style="height: 400px; overflow: auto;">
-      <el-tabs
-        @tab-click = "tabChange()"
-        v-model="active" tab-position="left">
+    <el-form label-position="top" label-width="80px" :model="form" style="height: 400px; overflow: auto;">
+      <el-tabs @tab-click="tabChange()" v-model="active" tab-position="left">
         <el-tab-pane name="1" label="基本信息">
           <el-form-item label="商品名称">
             <el-input v-model="form.goods_name"></el-input>
@@ -39,14 +36,9 @@
           <el-form-item label="商品分类">
             <!-- 级联选择器 -->
             <!-- {{SelecteOptions}} -->
-              <el-cascader
-                clearable
-                expand-Trigger='hover'
-                :options="options"
-                v-model="SelecteOptions"
-                :props="defaultProp"
-                @change="handleChange">
-              </el-cascader>
+            <el-cascader clearable expand-Trigger='hover' :options="options" v-model="SelecteOptions"
+              :props="defaultProp" @change="handleChange">
+            </el-cascader>
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="2" label="商品参数">商品参数1</el-tab-pane>
@@ -71,74 +63,74 @@
       </el-form-item>
 -->
 <script>
-export default {
-  data () {
-    return {
-      active: '1',
-      // 添加商品的表单数据
-      // this.$http.post(url,this.form)
-      // goods_name	商品名称	不能为空
-      // goods_price	价格	不能为空
-      // goods_weight	重量	不能为空
-      // goods_number	数量	不能为空
-      // goods_cat	以为','分割的分类列表	不能为空
-      // goods_introduce	介绍	可以为空
-      // pics	上传的图片临时路径（对象）	可以为空
-      // attrs	商品的参数（数组）	可以为空
-      form: {
-        goods_name: '',
-        goods_cat: '',
-        goods_price: '',
-        goods_number: '',
-        goods_weight: '',
-        goods_introduce: '',
-        pics: '',
-        attrs: ''
-      },
-      // 级联选择器绑定的数据
-      options: [],
-      SelecteOptions: [1, 3, 6],
-      defaultProp: {
-        label: 'cat_name',
-        value: 'cat_id',
-        children: 'children'
-      },
-      arrDyparams:''
-    }
-  },
-  created () {
-    this.getGoodsCate()
-  },
-  methods: {
-    // 点击不同的tab时
-    async tabChange(){
-      // 如果点击的是第二个tab 同时 三级分类要有值
-      if (this.active==='2') {
-        if (this.SelecteOptions.length!==3) {
-          // 提示
-          this.$message.warning("请先选择商品的三级分类")
-          return
-        }
-        // 获取数据
-        const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=many`)
-        console.log(res)
-        // attr_name attr_vals
-        this.arrDyparams = res.data.data
-
+  export default {
+    data() {
+      return {
+        active: '1',
+        // 添加商品的表单数据
+        // this.$http.post(url,this.form)
+        // goods_name	商品名称	不能为空
+        // goods_price	价格	不能为空
+        // goods_weight	重量	不能为空
+        // goods_number	数量	不能为空
+        // goods_cat	以为','分割的分类列表	不能为空
+        // goods_introduce	介绍	可以为空
+        // pics	上传的图片临时路径（对象）	可以为空
+        // attrs	商品的参数（数组）	可以为空
+        form: {
+          goods_name: '',
+          goods_cat: '',
+          goods_price: '',
+          goods_number: '',
+          goods_weight: '',
+          goods_introduce: '',
+          pics: '',
+          attrs: ''
+        },
+        // 级联选择器绑定的数据
+        options: [],
+        SelecteOptions: [1, 3, 6],
+        defaultProp: {
+          label: 'cat_name',
+          value: 'cat_id',
+          children: 'children'
+        },
+        arrDyparams: ''
       }
     },
-    // 级联选择器 @change 触发的方法
-    handleChange () {
-
+    created() {
+      this.getGoodsCate()
     },
-    // 获取三级分类的信息
-    async getGoodsCate () {
-      const res = await this.$http.get(`categories?type=3`)
-      console.log(res)
-      this.options = res.data.data
+    methods: {
+      // 点击不同的tab时
+      async tabChange() {
+        // 如果点击的是第二个tab 同时 三级分类要有值
+        if (this.active === '2') {
+          if (this.SelecteOptions.length !== 3) {
+            // 提示
+            this.$message.warning("请先选择商品的三级分类")
+            return
+          }
+          // 获取数据
+          const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=many`)
+          console.log(res)
+          // attr_name attr_vals
+          this.arrDyparams = res.data.data
+
+        }
+      },
+      // 级联选择器 @change 触发的方法
+      handleChange() {
+
+      },
+      // 获取三级分类的信息
+      async getGoodsCate() {
+        const res = await this.$http.get(`categories?type=3`)
+        console.log(res)
+        this.options = res.data.data
+      }
     }
   }
-}
 </script>
 
 <style scoped>
