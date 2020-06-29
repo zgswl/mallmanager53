@@ -41,27 +41,30 @@
             </el-cascader>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="2" label="商品参数">商品参数1</el-tab-pane>
+        <el-tab-pane name="2" label="商品参数">
+          <!-- 显示的是该三级分类的商品参数 -->
+          <el-form-item
+          :label="item1.attr_name"
+          :key="i"
+          v-for="(item1,i)
+          in arrDyparams">
+          <!-- 复选框组 -->
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox
+            v-for="(item2,i) in item1.attr_vals"
+            :key='i'
+            :label="item2"></el-checkbox>
+          </el-checkbox-group>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane name="3" label="商品属性">商品属性</el-tab-pane>
         <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
         <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
       </el-tabs>
     </el-form>
-
   </el-card>
 </template>
 
-<!--
-      <el-form-item label="名称">
-        <el-input v-model="formLabelAlign.name"></el-input>
-      </el-form-item>
-      <el-form-item label="活动区域">
-        <el-input v-model="formLabelAlign.region"></el-input>
-      </el-form-item>
-      <el-form-item label="活动形式">
-        <el-input v-model="formLabelAlign.type"></el-input>
-      </el-form-item>
--->
 <script>
   export default {
     data() {
@@ -95,7 +98,8 @@
           value: 'cat_id',
           children: 'children'
         },
-        arrDyparams: ''
+        arrDyparams: '',
+        checkList: []
       }
     },
     created() {
@@ -108,7 +112,7 @@
         if (this.active === '2') {
           if (this.SelecteOptions.length !== 3) {
             // 提示
-            this.$message.warning("请先选择商品的三级分类")
+            this.$message.warning('请先选择商品的三级分类')
             return
           }
           // 获取数据
@@ -116,7 +120,13 @@
           console.log(res)
           // attr_name attr_vals
           this.arrDyparams = res.data.data
-
+          // 并不是所有的三级分类都有动态参数 -> ""->[]->v-for报错
+          // this.arrDyparams 每个对象.attr_vals 字符串->数组-v-for
+          this.arrDyparams.forEach(item => {
+            item.attr_vals = 
+            item.attr_vals.length===0
+            ?[]:item.attr_vals.trim().split(',')
+          })
         }
       },
       // 级联选择器 @change 触发的方法
