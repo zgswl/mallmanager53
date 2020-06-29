@@ -49,8 +49,9 @@
           v-for="(item1,i)
           in arrDyparams">
           <!-- 复选框组 -->
-          <el-checkbox-group v-model="checkList">
+          <el-checkbox-group v-model="item1.attr_vals">
             <el-checkbox
+            border
             v-for="(item2,i) in item1.attr_vals"
             :key='i'
             :label="item2"></el-checkbox>
@@ -99,7 +100,7 @@
           children: 'children'
         },
         arrDyparams: '',
-        checkList: []
+        // checkList: []
       }
     },
     created() {
@@ -123,7 +124,7 @@
           // 并不是所有的三级分类都有动态参数 -> ""->[]->v-for报错
           // this.arrDyparams 每个对象.attr_vals 字符串->数组-v-for
           this.arrDyparams.forEach(item => {
-            item.attr_vals = 
+            item.attr_vals =
             item.attr_vals.length===0
             ?[]:item.attr_vals.trim().split(',')
           })
