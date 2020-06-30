@@ -15,8 +15,9 @@
     <el-form class="formcas" label-position="letf" label-width="80px">
       <el-form-item label="商品分类">
         <!-- 级联选择器 -->
-        {{SelectedOptions}}
+        {{ SelectedOptions }}
         <el-cascader
+          :show-all-levels="false"
           clearable
           expand-Trigger="hover"
           :options="options"
@@ -41,7 +42,8 @@ export default {
         label: "cat_name",
         value: "cat_id",
         children: "children"
-      }
+      },
+      arrDyparams:[]
     };
   },
   created() {
@@ -50,7 +52,23 @@ export default {
 
   methods: {
     // 级联选择器改变
-    handleChange() {},
+    async handleChange() {
+      if (this.SelectedOptions.length === 3) {
+        // 获取动态参数
+        const res = await this.$http.get(
+          `categories/${this.SelectedOptions[2]}/attributes?sel=many`
+          )
+
+        this.arrDyparams = res.data.data
+        this.arrDyparams.forEach(item => {
+          item.attr_vals =
+              item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(',')
+        })
+
+        console.log(this.arrDyparams)
+
+      }
+    },
     // 获取三级分类的数据
     async getGoodCate() {
       const res = await this.$http.get(`categories?type=3`);
@@ -65,7 +83,7 @@ export default {
 .alert {
   margin-top: 20px;
 }
-.formcas{
+.formcas {
   margin-top: 20px;
 }
 </style>
