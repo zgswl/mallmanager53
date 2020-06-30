@@ -40,7 +40,7 @@
               <!-- el-tag -->
               <el-tag
                 :key="tag"
-                v-for="tag in dynamicTags"
+                v-for="tag in scope.row.attr_vals"
                 closable
                 :disable-transitions="false"
                 @close="handleClose(tag)">
