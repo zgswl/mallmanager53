@@ -43,7 +43,7 @@
                 v-for="tag in scope.row.attr_vals"
                 closable
                 :disable-transitions="false"
-                @close="handleClose(scope.row.attr_vals,tag)">
+                @close="handleClose(scope.row.attr_vals,scope.row.attr_id,scope.row.attr_name,tag)">
                 {{tag}}
               </el-tag>
               <el-input
@@ -112,8 +112,26 @@ export default {
 
   methods: {
     // 点击x按钮
-    handleClose(attr_vals,tag) {
+    async handleClose(attr_vals,attr_id,attr_name,tag) {
       attr_vals.splice(attr_vals.indexOf(tag), 1);
+      // req 1.7.5
+      // categories/:id/attributes/:attrId
+      // put {attr_name:?,attr_sel:?,attr_vals:?}
+      // attr_name	参数名称	不能为空
+      // attr_sel	[only,many]	不能为空
+      // attr_vals	如果是 many 就需要填写值的选项，以逗号分隔
+      let putData = {
+        attr_name: attr_name,
+        attr_sel: 'many',
+        // 数组转成字符串
+        attr_vals: attr_vals.join(",")
+      }
+      const res = await this.$http.put(
+        `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
+        putData
+        )
+      console.log(res)
+
     },
     // 点击newTag+按钮
     showInput() {
@@ -139,7 +157,7 @@ export default {
         // 获取动态参数
         const res = await this.$http.get(
           `categories/${this.SelectedOptions[2]}/attributes?sel=many`
-        );
+        )
 
         this.arrDyparams = res.data.data;
         this.arrDyparams.forEach(item => {
@@ -147,7 +165,7 @@ export default {
             item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(",");
         });
 
-        console.log(this.arrDyparams);
+        // console.log(this.arrDyparams);
       }
     },
     // 获取三级分类的数据
