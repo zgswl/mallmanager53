@@ -43,30 +43,35 @@
         </el-tab-pane>
         <el-tab-pane name="2" label="商品参数">
           <!-- 显示的是该三级分类的商品参数 -->
-          <el-form-item
-          :label="item1.attr_name"
-          :key="i"
-          v-for="(item1,i)
+          <el-form-item :label="item1.attr_name" :key="i" v-for="(item1,i)
           in arrDyparams">
-          <!-- 复选框组 -->
-          <el-checkbox-group v-model="item1.attr_vals">
-            <el-checkbox
-            border
-            v-for="(item2,i) in item1.attr_vals"
-            :key='i'
-            :label="item2"></el-checkbox>
-          </el-checkbox-group>
+            <!-- 复选框组 -->
+            <el-checkbox-group v-model="item1.attr_vals">
+              <el-checkbox border v-for="(item2,i) in item1.attr_vals" :key='i' :label="item2"></el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="3" label="商品属性">
           <!-- 静态参数的数据 -->
           <el-form-item :label="item.attr_name" :key="i" v-for="(item,i) in arrStatiparams">
             <el-input v-model="item.attr_vals"></el-input>
-            </el-form-item>
+          </el-form-item>
           </el-form-item>
 
         </el-tab-pane>
-        <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
+        <el-tab-pane name="4" label="商品图片">
+          <el-form-item>
+            <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              list-type="picture"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
       </el-tabs>
     </el-form>
@@ -109,7 +114,7 @@
         // 动态参数的数据数组
         arrDyparams: [],
         // 静态参数的数据数组
-        arrStatiparams:[]
+        arrStatiparams: []
       }
     },
     created() {
@@ -134,11 +139,11 @@
           // this.arrDyparams 每个对象.attr_vals 字符串->数组-v-for
           this.arrDyparams.forEach(item => {
             item.attr_vals =
-            item.attr_vals.length===0
-            ?[]:item.attr_vals.trim().split(',')
+              item.attr_vals.length === 0
+                ? [] : item.attr_vals.trim().split(',')
           })
-        }else if(this.active === '3'){
-            if (this.SelecteOptions.length !== 3) {
+        } else if (this.active === '3') {
+          if (this.SelecteOptions.length !== 3) {
             // 提示
             this.$message.warning('请先选择商品的三级分类')
             return
