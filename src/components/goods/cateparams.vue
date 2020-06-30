@@ -83,7 +83,37 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="静态参数" name="2">静态参数</el-tab-pane>
+      <el-tab-pane label="静态参数" name="2">
+        <!-- 按钮 -->
+        <el-button type="danger">设置静态参数</el-button>
+        <!-- 表格 -->
+        <el-table :data="arrStaticparams"" style="width: 100%">
+          <el-table-column type="index" label="#">
+          </el-table-column>
+          <el-table-column label="属性名称" prop="attr_name"> </el-table-column>
+          <el-table-column label="属性值" prop="attr_vals"> </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                plain
+                type="primary"
+                icon="el-icon-edit"
+                circle
+                @click="showEditUserDia(scope.row)"
+              ></el-button>
+              <el-button
+                size="mini"
+                plain
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                @click="showDeleUserMsgBox(scope.row.id)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>
@@ -101,6 +131,7 @@ export default {
         children: "children"
       },
       arrDyparams: [],
+      arrStaticparams:[],
       active: "1",
       list:[],
       inputVisible: false,
@@ -158,12 +189,23 @@ export default {
         putData
         )
       }
-      console.log(res)
+      // console.log(res)
       this.inputVisible = false;
       this.inputValue = '';
     },
     // tab切换时
-    handleClick() {},
+    async handleClick() {
+      if(this.active==='2'){
+        if (this.SelectedOptions.length === 3) {
+        // 获取静态参数
+        const res = await this.$http.get(
+          `categories/${this.SelectedOptions[2]}/attributes?sel=only`
+        )
+
+        this.arrStaticparams = res.data.data;
+      }
+      }
+    },
     // 级联选择器改变
     async handleChange() {
       if (this.SelectedOptions.length === 3) {
