@@ -266,7 +266,7 @@ export default {
 
 <style scoped>
   .alert {
-    margin-top: 10px;
+    margin-top: 20px;
   }
   .ql-editor {
     min-height: 300px;
