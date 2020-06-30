@@ -62,9 +62,11 @@
         <el-tab-pane name="4" label="商品图片">
           <el-form-item>
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-preview="handlePreview"
+              action="http://localhost:8888/api/private/v1/upload"
+              :headers="headers"
               :on-remove="handleRemove"
+              :on-preview="handlePreview"
+              :on-success="handleSuccess"
               list-type="picture"
             >
               <el-button size="small" type="primary">点击上传</el-button>
@@ -72,14 +74,32 @@
             </el-upload>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
+        <el-tab-pane name="5" label="商品内容">
+          <el-form-item>
+            <!-- 表单元素 -->
+            <el-button type="primary">点我-添加商品</el-button>
+            <!-- 富文本 -->
+            <quill-editor v-model="form.goods_introduce"></quill-editor>
+
+          </el-form-item>
+        </el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
 </template>
 
 <script>
+  // require styles
+  import 'quill/dist/quill.core.css'
+  import 'quill/dist/quill.snow.css'
+  import 'quill/dist/quill.bubble.css'
+
+  import { quillEditor } from 'vue-quill-editor'
+
   export default {
+    components: {
+      quillEditor
+    },
     data() {
       return {
         active: '1',
@@ -114,13 +134,30 @@
         // 动态参数的数据数组
         arrDyparams: [],
         // 静态参数的数据数组
-        arrStatiparams: []
+        arrStatiparams: [],
+        headers:{
+          Authorization: localStorage.getItem('token')
+        }
       }
     },
     created() {
       this.getGoodsCate()
     },
     methods: {
+      //图片上传时的相关方法
+      handlePreview(file){},
+      handleRemove(file){
+        // file.response.data.tmp_path 图片临时上传的路径
+        console.log('移除' )
+        console.log(file)
+
+      },
+      handleSuccess(file){
+        // file.data.tmp_path 图片临时上传的路径
+        console.log('成功')
+        console.log(file)
+
+      },
       // 点击不同的tab时
       async tabChange() {
         // 如果点击的是第二个tab 同时 三级分类要有值
@@ -162,7 +199,7 @@
       // 获取三级分类的信息
       async getGoodsCate() {
         const res = await this.$http.get(`categories?type=3`)
-        console.log(res)
+        // console.log(res)
         this.options = res.data.data
       }
     }
@@ -172,5 +209,8 @@
 <style scoped>
   .alert {
     margin-top: 10px;
+  }
+  .ql-editor {
+    min-height: 300px;
   }
 </style>
