@@ -60,7 +60,10 @@
         </el-tab-pane>
         <el-tab-pane name="3" label="商品属性">
           <!-- 静态参数的数据 -->
-
+          <el-form-item :label="item.attr_name" :key="i" v-for="(item,i) in arrStatiparams">
+            <el-input v-model="item.attr_vals"></el-input>
+            </el-form-item>
+          </el-form-item>
 
         </el-tab-pane>
         <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
