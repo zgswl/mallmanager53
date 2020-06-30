@@ -43,7 +43,8 @@
                 v-for="tag in scope.row.attr_vals"
                 closable
                 :disable-transitions="false"
-                @close="handleClose(scope.row.attr_vals,scope.row.attr_id,scope.row.attr_name,tag)">
+                @close="handleClose(
+                  scope.row.attr_vals,scope.row.attr_id,scope.row.attr_name,tag)">
                 {{tag}}
               </el-tag>
               <el-input
@@ -52,8 +53,8 @@
                 v-model="inputValue"
                 ref="saveTagInput"
                 size="small"
-                @keyup.enter.native="handleInputConfirm(scope.row.attr_vals)"
-                @blur="handleInputConfirm(scope.row.attr_vals)"
+                @keyup.enter.native="handleInputConfirm(scope.row.attr_vals,scope.row.attr_id,scope.row.attr_name)"
+                @blur="handleInputConfirm(scope.row.attr_vals,scope.row.attr_id,scope.row.attr_name)"
               >
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
@@ -130,7 +131,7 @@ export default {
         `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
         putData
         )
-      console.log(res)
+      // console.log(res)
 
     },
     // 点击newTag+按钮
@@ -141,11 +142,23 @@ export default {
       });
     },
     // 回车键 or 失焦
-    handleInputConfirm(attr_vals) {
+    async handleInputConfirm(attr_vals,attr_id,attr_name) {
       let inputValue = this.inputValue;
       if (inputValue) {
         attr_vals.push(inputValue);
+        // req
+        let putData = {
+        attr_name: attr_name,
+        attr_sel: 'many',
+        // 数组转成字符串
+        attr_vals: attr_vals.join(",")
       }
+      const res = await this.$http.put(
+        `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
+        putData
+        )
+      }
+      console.log(res)
       this.inputVisible = false;
       this.inputValue = '';
     },
