@@ -77,7 +77,9 @@
         <el-tab-pane name="5" label="商品内容">
           <el-form-item>
             <!-- 表单元素 -->
-            <el-button type="primary">点我-添加商品</el-button>
+            <el-button type="primary"
+            @click="addGoods()"
+            >点我-添加商品</el-button>
             <!-- 富文本 -->
             <quill-editor v-model="form.goods_introduce"></quill-editor>
 
@@ -109,10 +111,18 @@
         // goods_price	价格	不能为空
         // goods_weight	重量	不能为空
         // goods_number	数量	不能为空
-        // goods_cat	以为','分割的分类列表	不能为空
         // goods_introduce	介绍	可以为空
+
+        // 未处理的数据
+        // goods_cat	以为','分割的分类列表	不能为空
+        // this.selection -> string
+
         // pics	上传的图片临时路径（对象）	可以为空
+        // pics 是数组[{pic:图片临时路径}]
+
+
         // attrs	商品的参数（数组）	可以为空
+        // 动态参数和静态参数 -> 数组
         form: {
           goods_name: '',
           goods_cat: '',
@@ -120,8 +130,8 @@
           goods_number: '',
           goods_weight: '',
           goods_introduce: '',
-          pics: '',
-          attrs: ''
+          pics: [],
+          attrs: []
         },
         // 级联选择器绑定的数据
         options: [],
@@ -144,18 +154,24 @@
       this.getGoodsCate()
     },
     methods: {
-      //图片上传时的相关方法
+      // 添加商品 发送请求
+      async addGoods(){
+        const res = await this.$http.post(`goods`,this.form)
+        console.log(res)
+      },
+      // 图片上传时的相关方法
+      // file形参里面是当前操作的图片的相关信息(图片名/图片路径)
       handlePreview(file){},
       handleRemove(file){
         // file.response.data.tmp_path 图片临时上传的路径
-        console.log('移除' )
-        console.log(file)
+        // console.log('移除' )
+        // console.log(file)
 
       },
       handleSuccess(file){
         // file.data.tmp_path 图片临时上传的路径
-        console.log('成功')
-        console.log(file)
+        // console.log('成功')
+        // console.log(file)
 
       },
       // 点击不同的tab时
