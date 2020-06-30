@@ -1,114 +1,88 @@
 <template>
-  <div>
-    <!-- 面包屑导航区 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-      <el-breadcrumb-item>商品分类</el-breadcrumb-item>
-    </el-breadcrumb>
-    <!-- 卡片视图 -->
-    <el-card>
-      <el-row :gutter="20">
-        <el-col :span="4">
+  <el-card class="box-car">
+    <my-bread level1="商品管理" level2="商品分类"></my-bread>
+    <el-row class="addrolebtn">
+      <el-col>
+        <el-button type="success" @click="addGoodsCate()">添加分类</el-button>
+      </el-col>
+    </el-row>
+
+    <!-- 表格 -->
+    <el-table
+      height="450"
+      :data="caslist"
+      style="width: 100%"
+      row-key="cat_id"
+      border
+      default-expand-all
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+      <el-table-column label="分类名称" prop="cat_name"> </el-table-column>
+
+      <el-table-column label="级别">
+        <template slot-scope="scope">
+          <span v-if="scope.row.cat_level === 0">一级</span>
+          <span v-else-if="scope.row.cat_level === 1">二级</span>
+          <span v-else-if="scope.row.cat_level === 2">三级</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否有效">
+        <template slot-scope="scope">
+          <span v-if="scope.row.cat_deleted === false">有效</span>
+          <span v-else-if="scope.row.cat_deleted === true">无效</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="130px">
+        <template slot-scope="scope">
+          <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
           <el-button
-          @click="$router.push({name:'goodsadd'})"
-          type="success"
-          plain>添加商品</el-button>
-        </el-col>
-      </el-row>
-      <!-- 表格数据 -->
-      <el-table :data="goodsList" border stripe>
-        <el-table-column type="index"></el-table-column>
-        <el-table-column label="商品名称" prop="goods_name"></el-table-column>
-        <el-table-column label="商品价格(元)" prop="goods_price" width="100px"></el-table-column>
-        <el-table-column label="商品重量" prop="goods_weight" width="70px"></el-table-column>
-        <el-table-column label="商品数量" prop="goods_number" width="70px"></el-table-column>
-        <el-table-column label="创建时间" prop="add_time" width="140px">
-          <template slot-scope="scope">{{scope.row.add_time | dataFormat }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="130px">
-          <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.goods_id)">
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 分页区域 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        :current-page="queryInfo.pagenum" :page-sizes="[5, 10, 15, 20]" :page-size="queryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper" :total="total" background></el-pagination>
-    </el-card>
-  </div>
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="removeById(scope.row.goods_id)"
+          >
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-card>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 10
+      defaultProp: {
+        label: "cat_name",
+        value: "cat_id",
+        children: "children"
       },
-      // 商品列表
-      goodsList: [],
-      // 商品总数
-      total: 0
-    }
+      caslist: [],
+
+      dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleDele: false,
+
+    };
   },
-  created () {
-    this.getGoodsList()
+  created() {
+    this.getGoodsCate()
   },
   methods: {
-    // 根据分页获取对应的商品列表
-    async getGoodsList () {
-      const { data: res } = await this.$http.get('goods', {
-        params: this.queryInfo
-      })
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取商品列表失败！')
-      }
-      this.goodsList = res.data.goods
-      //   console.log(this.goodsList)
-      this.total = res.data.total
-    },
-    handleSizeChange (newSize) {
-      this.queryInfo.pagesize = newSize
-      this.getGoodsList()
-    },
-    handleCurrentChange (newSize) {
-      this.queryInfo.pagenum = newSize
-      this.getGoodsList()
-    },
-    // 通过Id删除商品
-    async removeById (id) {
-      const confirmResult = await this.$confirm(
-        '此操作将永久删除该商品, 是否继续?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch(err => err)
-      if (confirmResult !== 'confirm') {
-        return this.$message.info('已取消删除！')
-      }
-      const { data: res } = await this.$http.delete('goods/' + id)
-      if (res.meta.status !== 200) {
-        return this.$message.error('删除商品失败！')
-      }
-      this.$message.success('删除商品成功！')
-      this.getGoodsList()
+    // 级联选择器 @change 触发的方法
+    async getGoodsCate() {
+      const res = await this.$http.get(`categories`);
+      this.caslist = res.data.data;
     }
-    // ,
-    // goAddPage() {
-    //   this.$router.push('/goods/add')
-    // }
   }
-}
+};
 </script>
 
 <style scoped>
+.box-card {
+  height: 100%;
+}
+.addrolebtn {
+  margin: 10px;
+}
 </style>

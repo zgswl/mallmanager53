@@ -251,9 +251,7 @@ export default {
       }
     },
     // 级联选择器 @change 触发的方法
-    handleChange () {
-
-    },
+    handleChange () {},
     // 获取三级分类的信息
     async getGoodsCate () {
       const res = await this.$http.get(`categories?type=3`)
