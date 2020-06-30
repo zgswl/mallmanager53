@@ -58,7 +58,11 @@
           </el-checkbox-group>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="3" label="商品属性">商品属性</el-tab-pane>
+        <el-tab-pane name="3" label="商品属性">
+          <!-- 静态参数的数据 -->
+
+
+        </el-tab-pane>
         <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
         <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
       </el-tabs>
@@ -99,8 +103,10 @@
           value: 'cat_id',
           children: 'children'
         },
-        arrDyparams: '',
-        // checkList: []
+        // 动态参数的数据数组
+        arrDyparams: [],
+        // 静态参数的数据数组
+        arrStatiparams:[]
       }
     },
     created() {
@@ -128,6 +134,17 @@
             item.attr_vals.length===0
             ?[]:item.attr_vals.trim().split(',')
           })
+        }else if(this.active === '3'){
+            if (this.SelecteOptions.length !== 3) {
+            // 提示
+            this.$message.warning('请先选择商品的三级分类')
+            return
+          }
+          // 获取数据
+          const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=only`)
+          // console.log(res)
+          this.arrStatiparams = res.data.data
+
         }
       },
       // 级联选择器 @change 触发的方法
