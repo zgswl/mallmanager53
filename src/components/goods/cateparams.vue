@@ -120,32 +120,32 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       // 级联选择器绑定的数据
       options: [],
       SelectedOptions: [],
       defaultProp: {
-        label: "cat_name",
-        value: "cat_id",
-        children: "children"
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
       },
       arrDyparams: [],
-      arrStaticparams:[],
-      active: "1",
-      list:[],
+      arrStaticparams: [],
+      active: '1',
+      list: [],
       inputVisible: false,
       inputValue: ''
-    };
+    }
   },
-  created() {
-    this.getGoodCate();
+  created () {
+    this.getGoodCate()
   },
 
   methods: {
     // 点击x按钮
-    async handleClose(attr_vals,attr_id,attr_name,tag) {
-      attr_vals.splice(attr_vals.indexOf(tag), 1);
+    async handleClose (attr_vals, attr_id, attr_name, tag) {
+      attr_vals.splice(attr_vals.indexOf(tag), 1)
       // req 1.7.5
       // categories/:id/attributes/:attrId
       // put {attr_name:?,attr_sel:?,attr_vals:?}
@@ -156,81 +156,80 @@ export default {
         attr_name: attr_name,
         attr_sel: 'many',
         // 数组转成字符串
-        attr_vals: attr_vals.join(",")
+        attr_vals: attr_vals.join(',')
       }
       const res = await this.$http.put(
         `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
         putData
-        )
+      )
       // console.log(res)
-
     },
     // 点击newTag+按钮
-    showInput() {
-      this.inputVisible = true;
+    showInput () {
+      this.inputVisible = true
       this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     },
     // 回车键 or 失焦
-    async handleInputConfirm(attr_vals,attr_id,attr_name) {
-      let inputValue = this.inputValue;
+    async handleInputConfirm (attr_vals, attr_id, attr_name) {
+      let inputValue = this.inputValue
       if (inputValue) {
-        attr_vals.push(inputValue);
+        attr_vals.push(inputValue)
         // req
         let putData = {
-        attr_name: attr_name,
-        attr_sel: 'many',
-        // 数组转成字符串
-        attr_vals: attr_vals.join(",")
-      }
-      const res = await this.$http.put(
-        `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
-        putData
+          attr_name: attr_name,
+          attr_sel: 'many',
+          // 数组转成字符串
+          attr_vals: attr_vals.join(',')
+        }
+        const res = await this.$http.put(
+          `categories/${this.SelectedOptions[2]}/attributes/${attr_id}`,
+          putData
         )
       }
       // console.log(res)
-      this.inputVisible = false;
-      this.inputValue = '';
+      this.inputVisible = false
+      this.inputValue = ''
     },
     // tab切换时
-    async handleClick() {
-      if(this.active==='2'){
+    async handleClick () {
+      if (this.active === '2') {
         if (this.SelectedOptions.length === 3) {
         // 获取静态参数
-        const res = await this.$http.get(
-          `categories/${this.SelectedOptions[2]}/attributes?sel=only`
-        )
+          const res = await this.$http.get(
+            `categories/${this.SelectedOptions[2]}/attributes?sel=only`
+          )
 
-        this.arrStaticparams = res.data.data;
-      }
+          this.arrStaticparams = res.data.data
+        }
       }
     },
     // 级联选择器改变
-    async handleChange() {
+    async handleChange () {
       if (this.SelectedOptions.length === 3) {
         // 获取动态参数
         const res = await this.$http.get(
           `categories/${this.SelectedOptions[2]}/attributes?sel=many`
         )
 
-        this.arrDyparams = res.data.data;
+        this.arrDyparams = res.data.data
         this.arrDyparams.forEach(item => {
           item.attr_vals =
-            item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(",");
-        });
+            item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(',')
+        })
 
         // console.log(this.arrDyparams);
       }
     },
     // 获取三级分类的数据
-    async getGoodCate() {
-      const res = await this.$http.get(`categories?type=3`);
+    async getGoodCate () {
+      const res = await this.$http.get(`categories?type=3`)
       // console.log(res)
-      this.options = res.data.data;
+      this.options = res.data.data
     }
   }
-};
+}
 </script>
 
 <style scoped>

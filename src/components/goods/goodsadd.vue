@@ -186,7 +186,7 @@ export default {
       const res = await this.$http.post(`goods`, this.form)
       // console.log(res)
       // 回到商品列表
-      this.$router.push({name:'goods'})
+      this.$router.push({name: 'goods'})
     },
     // 图片上传时的相关方法
     // file形参里面是当前操作的图片的相关信息(图片名/图片路径)
