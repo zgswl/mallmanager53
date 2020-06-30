@@ -43,7 +43,7 @@
                 v-for="tag in scope.row.attr_vals"
                 closable
                 :disable-transitions="false"
-                @close="handleClose(tag)">
+                @close="handleClose(scope.row.attr_vals,tag)">
                 {{tag}}
               </el-tag>
               <el-input
@@ -52,8 +52,8 @@
                 v-model="inputValue"
                 ref="saveTagInput"
                 size="small"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
+                @keyup.enter.native="handleInputConfirm(scope.row.attr_vals)"
+                @blur="handleInputConfirm(scope.row.attr_vals)"
               >
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
@@ -112,8 +112,8 @@ export default {
 
   methods: {
     // 点击x按钮
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    handleClose(attr_vals,tag) {
+      attr_vals.splice(attr_vals.indexOf(tag), 1);
     },
     // 点击newTag+按钮
     showInput() {
@@ -123,10 +123,10 @@ export default {
       });
     },
     // 回车键 or 失焦
-    handleInputConfirm() {
+    handleInputConfirm(attr_vals) {
       let inputValue = this.inputValue;
       if (inputValue) {
-        this.dynamicTags.push(inputValue);
+        attr_vals.push(inputValue);
       }
       this.inputVisible = false;
       this.inputValue = '';
