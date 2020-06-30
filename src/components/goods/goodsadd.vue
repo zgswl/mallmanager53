@@ -35,8 +35,8 @@
 
           <el-form-item label="商品分类">
             <!-- 级联选择器 -->
-            <!-- {{SelecteOptions}} -->
-            <el-cascader clearable expand-Trigger='hover' :options="options" v-model="SelecteOptions"
+            <!-- {{SelectedOptions}} -->
+            <el-cascader clearable expand-Trigger='hover' :options="options" v-model="SelectedOptions"
               :props="defaultProp" @change="handleChange">
             </el-cascader>
           </el-form-item>
@@ -53,7 +53,7 @@
         </el-tab-pane>
         <el-tab-pane name="3" label="商品属性">
           <!-- 静态参数的数据 -->
-          <el-form-item :label="item.attr_name" :key="i" v-for="(item,i) in arrStatiparams">
+          <el-form-item :label="item.attr_name" :key="i" v-for="(item,i) in arrStaticparams">
             <el-input v-model="item.attr_vals"></el-input>
           </el-form-item>
           </el-form-item>
@@ -91,135 +91,177 @@
 </template>
 
 <script>
-  // require styles
-  import 'quill/dist/quill.core.css'
-  import 'quill/dist/quill.snow.css'
-  import 'quill/dist/quill.bubble.css'
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
-  import { quillEditor } from 'vue-quill-editor'
+import { quillEditor } from 'vue-quill-editor'
 
-  export default {
-    components: {
-      quillEditor
-    },
-    data() {
-      return {
-        active: '1',
-        // 添加商品的表单数据
-        // this.$http.post(url,this.form)
-        // goods_name	商品名称	不能为空
-        // goods_price	价格	不能为空
-        // goods_weight	重量	不能为空
-        // goods_number	数量	不能为空
-        // goods_introduce	介绍	可以为空
+export default {
+  components: {
+    quillEditor
+  },
+  data () {
+    return {
+      active: '1',
+      // 添加商品的表单数据
+      // this.$http.post(url,this.form)
+      // goods_name	商品名称	不能为空
+      // goods_price	价格	不能为空
+      // goods_weight	重量	不能为空
+      // goods_number	数量	不能为空
+      // goods_introduce	介绍	可以为空
 
-        // 未处理的数据
-        // goods_cat	以为','分割的分类列表	不能为空
-        // this.selection -> string
+      // 未处理的数据
+      // goods_cat	以为','分割的分类列表	不能为空
+      // this.selection -> string
 
-        // pics	上传的图片临时路径（对象）	可以为空
-        // pics 是数组[{pic:图片临时路径}]
+      // pics	上传的图片临时路径（对象）	可以为空
+      // pics 是数组[{pic:图片临时路径}]
 
+      // attrs	商品的参数（数组）	可以为空
+      // 动态参数和静态参数 -> 数组
+      form: {
+        goods_name: '',
+        goods_price: '',
+        goods_number: '',
+        goods_weight: '',
+        goods_introduce: '',
 
-        // attrs	商品的参数（数组）	可以为空
-        // 动态参数和静态参数 -> 数组
-        form: {
-          goods_name: '',
-          goods_cat: '',
-          goods_price: '',
-          goods_number: '',
-          goods_weight: '',
-          goods_introduce: '',
-          pics: [],
-          attrs: []
-        },
-        // 级联选择器绑定的数据
-        options: [],
-        SelecteOptions: [1, 3, 6],
-        defaultProp: {
-          label: 'cat_name',
-          value: 'cat_id',
-          children: 'children'
-        },
-        // 动态参数的数据数组
-        arrDyparams: [],
-        // 静态参数的数据数组
-        arrStatiparams: [],
-        headers:{
-          Authorization: localStorage.getItem('token')
-        }
-      }
-    },
-    created() {
-      this.getGoodsCate()
-    },
-    methods: {
-      // 添加商品 发送请求
-      async addGoods(){
-        const res = await this.$http.post(`goods`,this.form)
-        console.log(res)
+        goods_cat: '',
+        pics: [],
+        attrs: []
       },
-      // 图片上传时的相关方法
-      // file形参里面是当前操作的图片的相关信息(图片名/图片路径)
-      handlePreview(file){},
-      handleRemove(file){
-        // file.response.data.tmp_path 图片临时上传的路径
-        // console.log('移除' )
-        // console.log(file)
-
+      // 级联选择器绑定的数据
+      options: [],
+      SelectedOptions: [1, 3, 6],
+      defaultProp: {
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
       },
-      handleSuccess(file){
-        // file.data.tmp_path 图片临时上传的路径
-        // console.log('成功')
-        // console.log(file)
-
-      },
-      // 点击不同的tab时
-      async tabChange() {
-        // 如果点击的是第二个tab 同时 三级分类要有值
-        if (this.active === '2') {
-          if (this.SelecteOptions.length !== 3) {
-            // 提示
-            this.$message.warning('请先选择商品的三级分类')
-            return
-          }
-          // 获取数据
-          const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=many`)
-          console.log(res)
-          // attr_name attr_vals
-          this.arrDyparams = res.data.data
-          // 并不是所有的三级分类都有动态参数 -> ""->[]->v-for报错
-          // this.arrDyparams 每个对象.attr_vals 字符串->数组-v-for
-          this.arrDyparams.forEach(item => {
-            item.attr_vals =
-              item.attr_vals.length === 0
-                ? [] : item.attr_vals.trim().split(',')
-          })
-        } else if (this.active === '3') {
-          if (this.SelecteOptions.length !== 3) {
-            // 提示
-            this.$message.warning('请先选择商品的三级分类')
-            return
-          }
-          // 获取数据
-          const res = await this.$http.get(`categories/${this.SelecteOptions[2]}/attributes?sel=only`)
-          // console.log(res)
-          this.arrStatiparams = res.data.data
-
-        }
-      },
-      // 级联选择器 @change 触发的方法
-      handleChange() {
-
-      },
-      // 获取三级分类的信息
-      async getGoodsCate() {
-        const res = await this.$http.get(`categories?type=3`)
-        // console.log(res)
-        this.options = res.data.data
+      // 动态参数的数据数组
+      arrDyparams: [],
+      // 静态参数的数据数组
+      arrStaticparams: [],
+      headers: {
+        Authorization: localStorage.getItem('token')
       }
     }
+  },
+  created () {
+    this.getGoodsCate()
+  },
+  methods: {
+    // 添加商品 发送请求
+    async addGoods () {
+      // goods_cat -> 分类
+      this.form.goods_cat = this.SelectedOptions.join(',')
+
+      // pics 在上传和移除图片时 进行赋值和删除 [].findIndex()
+
+      // arrts [{attr_id:?,attr_value:?}]
+      // 动态参数数组
+      // 遍历 + 取值 + 放在一个新数组中
+      let arr1 = this.arrDyparams.map(item => {
+        // item.attr_id 和 item.attr_vals
+        // return "abc"
+        return {attr_id: item.attr_id, attr_value: item.attr_vals }
+      })
+
+      // console.log(arr1)
+      // 静态参数数组
+      let arr2 = this.arrStaticparams.map(item => {
+        // item.attr_id 和 item.attr_vals
+        // return "abc"
+        return { attr_id: item.attr_id, attr_value: item.attr_vals }
+      })
+
+      this.form.arrts = [...arr1, ...arr2]
+
+      // console.log(this.arrDyparams)
+
+      // 发送请求之前 处理this.form中的未处理的数据
+      const res = await this.$http.post(`goods`, this.form)
+      // console.log(res)
+      // 回到商品列表
+      this.$router.push({name:'goods'})
+    },
+    // 图片上传时的相关方法
+    // file形参里面是当前操作的图片的相关信息(图片名/图片路径)
+    handlePreview (file) {},
+    handleRemove (file) {
+      // file.response.data.tmp_path 图片临时上传的路径
+      // console.log('移除')
+      // console.log(file)
+
+      // this.form.pics 移除当前x掉的图片
+      // 先获取该图片的索引
+      // findIndex() 遍历 把符合条件的元素索引进行返回
+
+      // [{pic:图片路径1},{pic:图片路径2}]
+      let Index = this.form.pics.findIndex((item) => {
+        return item.pic === file.response.data.tmp_path
+      })
+      this.form.pics.splice(Index, 1)
+      // console.log(this.form.pics)
+    },
+    handleSuccess (file) {
+      // file.data.tmp_path 图片临时上传的路径
+      // console.log('成功')
+      // 给this.form.pics
+      this.form.pics.push({
+        pic: file.data.tmp_path
+      })
+
+      // console.log(file)
+    },
+    // 点击不同的tab时
+    async tabChange () {
+      // 如果点击的是第二个tab 同时 三级分类要有值
+      if (this.active === '2') {
+        if (this.SelectedOptions.length !== 3) {
+          // 提示
+          this.$message.warning('请先选择商品的三级分类')
+          return
+        }
+        // 获取数据
+        const res = await this.$http.get(`categories/${this.SelectedOptions[2]}/attributes?sel=many`)
+        // console.log(res)
+        // attr_name attr_vals
+        this.arrDyparams = res.data.data
+        // 并不是所有的三级分类都有动态参数 -> ""->[]->v-for报错
+        // this.arrDyparams 每个对象.attr_vals 字符串->数组-v-for
+        this.arrDyparams.forEach(item => {
+          item.attr_vals =
+              item.attr_vals.length === 0
+                ? [] : item.attr_vals.trim().split(',')
+        })
+      } else if (this.active === '3') {
+        if (this.SelectedOptions.length !== 3) {
+          // 提示
+          this.$message.warning('请先选择商品的三级分类')
+          return
+        }
+        // 获取数据
+        const res = await this.$http.get(`categories/${this.SelectedOptions[2]}/attributes?sel=only`)
+        // console.log(res)
+        this.arrStaticparams = res.data.data
+      }
+    },
+    // 级联选择器 @change 触发的方法
+    handleChange () {
+
+    },
+    // 获取三级分类的信息
+    async getGoodsCate () {
+      const res = await this.$http.get(`categories?type=3`)
+      // console.log(res)
+      this.options = res.data.data
+    }
   }
+}
 </script>
 
 <style scoped>
