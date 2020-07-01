@@ -15,6 +15,9 @@ import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/reset.css'
 
+// 导入表格树
+import TreeTable from 'vue-table-with-tree-grid'
+
 import router from './router'
 Vue.prototype.$http = axios
 
@@ -30,6 +33,8 @@ Vue.filter('fmtdate', (v) => {
 
 // 全局自定义组件
 Vue.component(MyBread.name, MyBread)
+// 组件全局注册 表格树
+Vue.component('tree-table', TreeTable)
 
 /* eslint-disable no-new */
 new Vue({
