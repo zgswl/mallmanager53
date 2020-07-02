@@ -9,6 +9,8 @@ import Goodslist from '@/components/goods/goodslist.vue'
 import GoodsAdd from '@/components/goods/goodsadd.vue'
 import Cateparams from '@/components/goods/cateparams.vue'
 import GoodsCate from '@/components/goods/goodscate.vue'
+import Oder from "@/components/order/order.vue"
+import Reports from "@/components/report/Report.vue"
 
 import { Message } from 'element-ui'
 
@@ -17,54 +19,64 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      name: 'login',
-      path: '/login',
+      name: "login",
+      path: "/login",
       component: Login
     },
     {
-      name: 'home',
-      path: '/',
+      name: "home",
+      path: "/",
       component: Home,
       children: [
         {
-          name: 'users',
-          path: 'users',
+          name: "users",
+          path: "users",
           component: Users
         },
         {
-          name: 'right',
-          path: '/rights',
+          name: "right",
+          path: "/rights",
           component: Right
         },
         {
-          name: 'roles',
-          path: '/roles',
+          name: "roles",
+          path: "/roles",
           component: Role
         },
         {
-          name: 'goods',
-          path: '/goods',
+          name: "goods",
+          path: "/goods",
           component: Goodslist
         },
         {
-          name: 'goodsadd',
-          path: '/goodsadd',
+          name: "goodsadd",
+          path: "/goodsadd",
           component: GoodsAdd
         },
         {
-          name: 'params',
-          path: '/params',
+          name: "params",
+          path: "/params",
           component: Cateparams
         },
         {
-          name: 'categories',
-          path: '/categories',
+          name: "categories",
+          path: "/categories",
           component: GoodsCate
+        },
+        {
+          name: "orders",
+          path: "/orders",
+          component: Oder
+        },
+        {
+          name: "reports",
+          path: "/reports",
+          component: Reports
         }
       ]
     }
   ]
-})
+});
 
 // 在路由配置生效之前 统一判断token
 // 路由守卫 在路由配置生效之前
